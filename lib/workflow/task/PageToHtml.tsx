@@ -1,4 +1,5 @@
 import { TaskParamType, TaskType } from "@/types/tasks";
+import { WorkflowTask } from "@/types/workflows";
 import { CodeIcon, LucideProps } from "lucide-react";
 
 export const PageToHtmlTask = {
@@ -8,6 +9,7 @@ export const PageToHtmlTask = {
     <CodeIcon className="stroke-rose-400" {...props} />
   ),
   isEntryPoint: false,
+  credits: 3,
   inputs: [
     {
       name: "Web page",
@@ -25,4 +27,4 @@ export const PageToHtmlTask = {
       type: TaskParamType.BROWSER_INSTANCE
     }
   ]
-}
+} satisfies WorkflowTask

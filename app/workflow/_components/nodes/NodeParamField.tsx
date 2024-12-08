@@ -7,7 +7,7 @@ import { AppNode } from "@/types/app-nodes";
 import { useCallback } from "react";
 import BrowserInstanceParamField from "./param/BrowserInstanceParamField";
 
-function NodeParamField({ param, nodeId }: { param: TaskParam, nodeId: string }) {
+function NodeParamField({ param, nodeId, disabled }: { param: TaskParam, nodeId: string, disabled?: boolean }) {
   const { updateNodeData, getNode } = useReactFlow();
 
   const node = getNode(nodeId) as AppNode;
@@ -38,6 +38,7 @@ function NodeParamField({ param, nodeId }: { param: TaskParam, nodeId: string })
           param={param}
           value={value}
           updateValue={updateNodeParam}
+          disabled={disabled}
         />
       )
 
