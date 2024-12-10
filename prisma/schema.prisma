@@ -18,9 +18,70 @@ model Workflow {
   
   definition String
   status String
+
+  lastRunAt DateTime?
+  lastRunId String?
+  lastRunStatus String?
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  executions WorkflowExecution[]
+
   @@unique([name, userId])
+}
+
+model WorkflowExecution {
+  id String @id @default(cuid())
+  workflowId String
+  userId String
+  trigger String
+  status String
+  definition String @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  startedAt DateTime?
+  completedAt DateTime?
+  creditsConsumed Int @default(0)
+
+  phases ExecutionPhase[]
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+}
+
+model ExecutionPhase {
+  id String @id @default(cuid())
+  userId String
+  status String
+  number Int
+  node String
+  name String
+
+  startedAt DateTime?
+  completedAt DateTime?
+
+  inputs String?
+  outputs String?
+
+  creditsConsumed Int?
+  workflowExecutionId String
+  logs ExecutionLog[]
+
+  execution WorkflowExecution @relation(fields: [workflowExecutionId], references: [id], onDelete: Cascade)
+}
+
+model ExecutionLog {
+  id String @id @default(cuid())
+  executionPhaseId String
+  logLevel String
+  message String
+  timestamp DateTime @default(now())
+
+  executionPhase ExecutionPhase @relation(fields: [executionPhaseId], references: [id], onDelete: Cascade)
+}
+
+model UserBalance {
+  userId String @id
+  credits Int @default(0)
 }
