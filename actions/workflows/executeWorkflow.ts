@@ -79,7 +79,7 @@ export async function ExecuteWorkflow(form: { workflowId: string, flowDefinition
     throw new Error("Workflow execution not created");
   }
 
-  StartWorkflowExecution(execution.id);
+  StartWorkflowExecution(execution.id, userId);
 
   redirect(`/workflow/runs/${workflowId}/${execution.id}`);
 }

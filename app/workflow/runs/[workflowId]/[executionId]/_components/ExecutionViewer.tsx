@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DatesToDuration } from '@/lib/helper/dates';
 import { GetPhasesTotalCost } from '@/lib/helper/phases';
 import { cn } from '@/lib/utils';
-import { Log, LogLevel } from '@/types/log';
+import { LogLevel } from '@/types/log';
 import { ExecutionPhaseStatus, WorkflowExecutionStatus } from '@/types/workflows';
 import { ExecutionLog } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query'
@@ -19,6 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2Icon, LucideIcon, WorkflowIcon } from 'lucide-react';
 import React, { ReactNode, useEffect, useState } from 'react'
 import PhaseStatusBadge from './PhaseStatusBadge';
+import ReactCountUpWrapper from '@/components/ReactCountUpWrapper';
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 
@@ -63,7 +64,12 @@ export default function ExecutionViewer({ execution }: { execution: ExecutionDat
           <ExecutionLabel 
             icon={CircleDashedIcon} 
             label='Status' 
-            value={query.data?.status} 
+            value={
+              <div className='font-semibold capitalize flex gap-2 items-center'>
+                <PhaseStatusBadge status={query.data?.status as ExecutionPhaseStatus} />
+                <span>{query.data?.status}</span>
+              </div>
+            } 
           />
 
           <ExecutionLabel 
@@ -81,7 +87,7 @@ export default function ExecutionViewer({ execution }: { execution: ExecutionDat
           <ExecutionLabel 
             icon={CoinsIcon}
             label='Credits consumed'
-            value={creditsConsumed}
+            value={<ReactCountUpWrapper value={creditsConsumed} />}
           />
         </div>
 
@@ -138,7 +144,7 @@ export default function ExecutionViewer({ execution }: { execution: ExecutionDat
                   <CoinsIcon size={18} className='stroke-muted-foreground' />
                   <span>Credits</span>
                 </div>
-                <span>TODO</span>
+                <span>{phaseDetails.data?.creditsConsumed}</span>
               </Badge>
 
               <Badge variant={"outline"} className='space-x-4'>
