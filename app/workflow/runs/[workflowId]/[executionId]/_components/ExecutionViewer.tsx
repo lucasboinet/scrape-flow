@@ -16,10 +16,20 @@ import { ExecutionPhaseStatus, WorkflowExecutionStatus } from '@/types/workflows
 import { ExecutionLog } from '@prisma/client';
 import { useQuery } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns';
-import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2Icon, LucideIcon, WorkflowIcon } from 'lucide-react';
+import {
+  CalendarIcon,
+  CircleDashedIcon,
+  ClockIcon,
+  CoinsIcon,
+  CopyIcon,
+  Loader2Icon,
+  LucideIcon,
+  WorkflowIcon
+} from 'lucide-react';
 import React, { ReactNode, useEffect, useState } from 'react'
 import PhaseStatusBadge from './PhaseStatusBadge';
 import ReactCountUpWrapper from '@/components/ReactCountUpWrapper';
+import {toast} from "sonner";
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 
@@ -37,7 +47,7 @@ export default function ExecutionViewer({ execution }: { execution: ExecutionDat
     queryKey: ["phaseDetails", selectedPhase],
     enabled: selectedPhase !== null,
     queryFn: () => GetWorkflowPhaseDetails(selectedPhase!),
-
+    refetchInterval: () => query.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
   })
 
   const startedAt = query.data?.startedAt ? formatDistanceToNow(query.data?.startedAt, { addSuffix: true }) : '-';
@@ -225,7 +235,12 @@ function LogsViewer({ logs }: { logs: ExecutionLog[] | undefined }) {
 
 function ParameterViewer({ title, subtitle, paramsJSON }: { title: string, subtitle: string, paramsJSON?: string | null }) {
   const params = paramsJSON ? JSON.parse(paramsJSON) : undefined;
-  
+
+  const handleCopyValue = async (value: string) => {
+    await navigator.clipboard.writeText(value as string);
+    toast.success('Copied to clipboard');
+  }
+
   return (
     <Card>
       <CardHeader className='rounded-lg rounded-b-none border-b py-4 bg-gray-50 dark:bg-background'>
@@ -243,7 +258,16 @@ function ParameterViewer({ title, subtitle, paramsJSON }: { title: string, subti
               className="flex justify-between items-center space-y-1"
             >
               <p className='text-sm text-muted-foreground flex-1 basis-1/3'>{key}</p>
-              <Input readOnly className='flex-1 basis-2/3' value={value as string} />
+              <div className="basis-2/3 flex gap-2">
+                <Input readOnly className='flex-1' value={value as string} />
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={() => handleCopyValue(value as string)}
+                >
+                  <CopyIcon />
+                </Button>
+              </div>
             </div>
           ))}
         </div>

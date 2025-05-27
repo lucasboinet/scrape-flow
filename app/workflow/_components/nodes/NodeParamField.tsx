@@ -1,10 +1,10 @@
 'use client'
 
-import { TaskParam, TaskParamType } from "@/types/tasks"
+import {TaskParam, TaskParamType} from "@/types/tasks"
 import StringParamField from "./param/StringParamField"
-import { useReactFlow } from "@xyflow/react"
-import { AppNode } from "@/types/app-nodes";
-import { useCallback } from "react";
+import {useReactFlow} from "@xyflow/react"
+import {AppNode} from "@/types/app-nodes";
+import {useCallback} from "react";
 import BrowserInstanceParamField from "./param/BrowserInstanceParamField";
 
 function NodeParamField({ param, nodeId, disabled }: { param: TaskParam, nodeId: string, disabled?: boolean }) {

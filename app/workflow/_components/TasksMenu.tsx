@@ -20,6 +20,15 @@ function TasksMenu() {
             <TaskMenuButton taskType={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
           </AccordionContent>
         </AccordionItem>
+
+        <AccordionItem value='extraction'>
+          <AccordionTrigger className='font-bold'>
+            AI
+          </AccordionTrigger>
+          <AccordionContent className='flex flex-col gap-1'>
+            <TaskMenuButton taskType={TaskType.ASK_AI} />
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
     </aside>
   )
